@@ -56,4 +56,11 @@ def pesquisar_ultimo_usuario():
     dados = cur.fetchall()
     return dados
 
+def exportar_excel():
+   
+    cur = con.cursor()
+    query = f"SELECT * FROM formulario"
+    cur.execute(query)
+    dados = cur.fetchall()
+    return dados
 

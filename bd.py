@@ -3,7 +3,7 @@ import sqlite3 as lite
 
 # criando conexão
 # con de conexão
-con = lite.connect('banco.db')
+con = lite.connect(r'C:\Users\Evandro Vieira\OneDrive\Área de Trabalho\AveMaria\AveMaria-env\banco.db')
 # Criando tabela
 with con:
     cur = con.cursor()

@@ -1,12 +1,14 @@
-
 import tkinter as tk
 from tkinter import Button, Entry, Frame, Label, PhotoImage, Place, ttk
 from tkinter import messagebox
-import datetime as td
+import datetime as dt
 from tkinter import *  #  Import window control 
 from tkinter import ttk
 from view import *
-import copy
+import pandas as pd
+import shutil
+import os
+
 global tabela
 global tabela1
 global mostrar_tabela2
@@ -67,7 +69,7 @@ email_entry.place(x = 200, y=230)
 telefone_entry = Entry(width=15,fg="#cda352",font=('Verdana 20  italic'),relief='solid')
 telefone_entry.place(x = 200, y=270)
 #data cadastro
-data_datetime = td.datetime.now().date()
+data_datetime = dt.datetime.now().date()
 estado_entry = Entry(width=7,fg="#cda352",font=('Verdana 20  italic'),relief='solid')
 estado_entry.place(x =575, y=270)
 cidade_entry = Entry(width=15,fg="#cda352",font=('Verdana 20  italic'),relief='solid')
@@ -201,7 +203,7 @@ def botao_atualizar():
             confirmar_button.place(x=835,y=360)
             
         except IndexError as e:
-            messagebox.showerror('Erro','Seleciona um item da tabela')
+            messagebox.showerror('Erro','Selecione um item da tabela')
 global botao_atualizar_tabela2
 def botao_atualizar_tabela2():
         try:
@@ -275,7 +277,7 @@ def botao_atualizar_tabela2():
             confirmar_button = Button(text="Confirmar",command=atualizar,fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2)
             confirmar_button.place(x=835,y=360)
         except IndexError as e:
-            messagebox.showerror('Erro','Seleciona um item da tabela')
+            messagebox.showerror('Erro','Selecione um item da tabela')
 
 def botao_deletar():
     try:
@@ -334,9 +336,9 @@ def botao_pesquisar():
         janela1.iconbitmap(r"C:\Users\Evandro Vieira\OneDrive\Área de Trabalho\AveMaria\AveMaria-env\imagens\icone.ico")
         pesquisar = tk.Label(janela1,text="Pesquisa 🔎",fg="#cda352",bg="#ffffff",font=('Verdana 40  italic'))
         pesquisar.place(x=250,y=20)
-        atualizar_button1 = Button(janela1,text="Atualizar",command=botao_atualizar_tabela2,fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2)
+        atualizar_button1 = Button(janela1,text="Atualizar",command=botao_atualizar_tabela2,fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2,overrelief='sunken')
         atualizar_button1.place(x=150,y=130)
-        excluir_button1 = Button(janela1,text="Excluir",command=botao_deletar_tabela2,fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2,)
+        excluir_button1 = Button(janela1,text="Excluir",command=botao_deletar_tabela2,fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2,overrelief='sunken')
         excluir_button1.place(x=480,y=130)
         global mostrar_tabela2
         def mostrar_tabela2():
@@ -380,7 +382,7 @@ def botao_pesquisar():
             # centralizar tela
             
             tabela1.place(x=0,y=200,bordermode="inside",width=800,height=400)
-            scroll_bar = tk.Scrollbar(tabela,orient=VERTICAL,command=tabela1.yview,width=15,)
+            scroll_bar = tk.Scrollbar(tabela1,orient=VERTICAL,command=tabela1.yview,width=15,)
             tabela1.configure(yscroll=scroll_bar.set,)
             scroll_bar.pack(side=RIGHT, fill=Y,)
             
@@ -392,17 +394,24 @@ def botao_pesquisar():
         finally:
             mostrar_tabela2()
 
-
+def exportar_dados():
+    dados = exportar_excel()
+    diretorio = os.getcwd()
+    diretorio += ' clientes.xlsx'
+    
+    dados = pd.DataFrame(dados,columns=['id','nome','cpf_rg','email','telefone','data_cadastro','estado','cidade','cep', 'logradouro', 'bairro', 'numero', 'obs'])
+    dados.to_excel(diretorio, index = 0)
+    
 # botoes
-inserir_button = Button(text="Inserir",command=botao_inserir,fg="#cda352",bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2)
+inserir_button = Button(text="Inserir",command=botao_inserir,fg="#cda352",bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2,overrelief='sunken')
 inserir_button.place(x=720,y=360)
-atualizar_button = Button(text="Atualizar",command=botao_atualizar,fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2,)
+atualizar_button = Button(text="Atualizar",command=botao_atualizar,fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2,overrelief='sunken')
 atualizar_button.place(x=840,y=360)
-excluir_button = Button(text="Excluir",command=botao_deletar,fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2,)
+excluir_button = Button(text="Excluir",command=botao_deletar,fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2,overrelief='sunken')
 excluir_button.place(x=989,y=360)
-exportar_button = Button(text="Exportar Excel",fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2)
+exportar_button = Button(text="Exportar Excel",command=exportar_dados,fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2,overrelief='sunken')
 exportar_button.place(x=1109,y=360)
-pesquisar_button = Button(text="Pesquisar🔎",command=botao_pesquisar,fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2)
+pesquisar_button = Button(text="Pesquisar🔎",command=botao_pesquisar,fg="#cda352", bg="#ffffff",font=('Verdana 20  italic'),relief='groove',border=2,overrelief='sunken')
 pesquisar_button.place(x=720,y=430)
 
 
